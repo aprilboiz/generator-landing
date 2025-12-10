@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { Container, SectionTitle, Input, TextArea, Button } from "@/components/ui";
-import { Check, MapPin, Mail } from "lucide-react";
+import { Check, MapPin, Mail, AlertCircle } from "lucide-react";
 
 const CONTACT_INFO = {
   hotline: "0909-XXX-XXX",
@@ -21,14 +21,54 @@ const SERVICE_TYPES = [
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
+// Field errors type
+interface FieldErrors {
+  phone?: string;
+  name?: string;
+}
+
+// Validate Vietnamese phone number
+const validatePhone = (phone: string): string | null => {
+  if (!phone || phone.trim() === "") {
+    return "Vui lòng nhập số điện thoại";
+  }
+  const cleanPhone = phone.replace(/[\s-]/g, "");
+  const phoneRegex = /^\+?(\d{1,3})?[-.\s]?(\(?\d{3}\)?[-.\s]?)?(\d[-.\s]?){6,9}\d$/;
+  if (!phoneRegex.test(cleanPhone)) {
+    return "Số điện thoại không hợp lệ";
+  }
+  return null;
+};
+
 export function ContactSection() {
   const [formStatus, setFormStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [phone, setPhone] = useState("");
+
+  // Real-time phone validation
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPhone(value);
+    
+    // Clear error when user starts typing again
+    if (fieldErrors.phone) {
+      setFieldErrors(prev => ({ ...prev, phone: undefined }));
+    }
+  };
+
+  // Validate on blur
+  const handlePhoneBlur = () => {
+    const error = validatePhone(phone);
+    if (error) {
+      setFieldErrors(prev => ({ ...prev, phone: error }));
+    }
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormStatus("loading");
     setErrorMessage("");
+    setFieldErrors({});
 
     const formData = new FormData(e.currentTarget);
     const data = {
@@ -39,6 +79,15 @@ export function ContactSection() {
       message: formData.get("message") as string,
     };
 
+    // Client-side validation
+    const phoneError = validatePhone(data.phone);
+    if (phoneError) {
+      setFieldErrors({ phone: phoneError });
+      return;
+    }
+
+    setFormStatus("loading");
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -46,8 +95,20 @@ export function ContactSection() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Gửi form thất bại");
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Show server-side validation error
+        if (result.error) {
+          setFieldErrors({ phone: result.error });
+        }
+        setFormStatus("error");
+        setErrorMessage(result.error || "Gửi form thất bại");
+        return;
+      }
+
       setFormStatus("success");
+      setPhone("");
       (e.target as HTMLFormElement).reset();
     } catch {
       setFormStatus("error");
@@ -76,7 +137,31 @@ export function ContactSection() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid md:grid-cols-2 gap-5">
                   <Input label="Họ tên" name="name" placeholder="Nguyễn Văn A" />
-                  <Input label="Số điện thoại" name="phone" type="tel" placeholder="0909 xxx xxx" required />
+                  <div className="w-full">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                      Số điện thoại <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={phone}
+                      onChange={handlePhoneChange}
+                      onBlur={handlePhoneBlur}
+                      placeholder="0909 xxx xxx"
+                      className={`w-full px-4 py-3 rounded-xl border transition-colors focus:outline-none focus:ring-2 bg-white dark:bg-gray-800 ${
+                        fieldErrors.phone
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 dark:border-gray-600 focus:ring-orange-500 focus:border-orange-500"
+                      }`}
+                      required
+                    />
+                    {fieldErrors.phone && (
+                      <div className="flex items-center gap-1 mt-2 text-red-500 text-sm">
+                        <AlertCircle className="w-4 h-4" />
+                        <span>{fieldErrors.phone}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-5">
                   <Input label="Khu vực" name="area" placeholder="Quận/Huyện, Tỉnh/TP" />
@@ -90,7 +175,15 @@ export function ContactSection() {
                   </div>
                 </div>
                 <TextArea label="Mô tả chi tiết" name="message" placeholder="Mô tả tình trạng máy, model, công suất..." />
-                {formStatus === "error" && <p className="text-red-500 text-sm">{errorMessage}</p>}
+                
+                {/* General error message */}
+                {formStatus === "error" && errorMessage && !fieldErrors.phone && (
+                  <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
+                
                 <Button type="submit" size="lg" className="w-full md:w-auto" disabled={formStatus === "loading"}>
                   {formStatus === "loading" ? "Đang gửi..." : "Gửi yêu cầu tư vấn"}
                 </Button>
@@ -122,3 +215,4 @@ export function ContactSection() {
     </section>
   );
 }
+

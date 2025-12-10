@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendContactNotification } from "@/lib/email";
 
 // Interface cho dữ liệu form contact
 interface ContactFormData {
@@ -12,8 +13,7 @@ interface ContactFormData {
 /**
  * API Route: POST /api/contact
  * Xử lý form liên hệ từ landing page
- * Hiện tại chỉ log ra console (mock handler)
- * TODO: Tích hợp với email service, CRM, hoặc database
+ * Gửi email thông báo qua Resend
  */
 export async function POST(request: Request) {
   try {
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Log data (mock handler)
+    // Log data
     console.log("=== NEW CONTACT FORM SUBMISSION ===");
     console.log("Time:", new Date().toISOString());
     console.log("Name:", data.name || "Không cung cấp");
@@ -47,9 +47,15 @@ export async function POST(request: Request) {
     console.log("Message:", data.message || "Không có");
     console.log("===================================");
 
-    // TODO: Gửi email thông báo
-    // TODO: Lưu vào database/CRM
-    // TODO: Gửi tin nhắn Zalo/SMS
+    // Gửi email thông báo
+    try {
+      await sendContactNotification(data);
+      console.log("✅ Email sent successfully");
+    } catch (emailError) {
+      console.error("❌ Failed to send email:", emailError);
+      // Không throw error - vẫn trả về success cho user
+      // Email failure không nên block việc nhận form
+    }
 
     return NextResponse.json({
       success: true,
@@ -63,3 +69,4 @@ export async function POST(request: Request) {
     );
   }
 }
+
