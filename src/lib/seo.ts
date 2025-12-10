@@ -97,7 +97,7 @@ export const defaultBusinessInfo: LocalBusinessSchema = {
     "Dịch vụ sửa chữa, bảo trì và bán máy phát điện uy tín tại Hồ Chí Minh. Hỗ trợ 24/7, linh kiện chính hãng, bảo hành dài hạn.",
   telephone: "0909-XXX-XXX", // TODO: Thay bằng số thật
   address: {
-    streetAddress: "123 Đường ABC", // TODO: Thay bằng địa chỉ thật
+    streetAddress: "81 Đường số 3", // TODO: Thay bằng địa chỉ thật
     addressLocality: "Quận Bình Tân",
     addressRegion: "Hồ Chí Minh",
     postalCode: "700000",
@@ -112,5 +112,5 @@ export const defaultBusinessInfo: LocalBusinessSchema = {
     "Tây Ninh",
   ],
   priceRange: "$$",
-  url: "https://mayphatdienhcm.vn", // TODO: Thay bằng URL thật
+  url: "https://mayphatdienhcm.vercel.app", // TODO: Thay bằng URL thật
 };

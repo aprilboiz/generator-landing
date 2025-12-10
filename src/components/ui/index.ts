@@ -6,3 +6,5 @@ export { Input } from "./Input";
 export { TextArea } from "./TextArea";
 export { FloatingButtons } from "./FloatingButtons";
 export { Navbar } from "./Navbar";
+export { ThemeProvider, useTheme } from "./ThemeProvider";
+export { ThemeToggle } from "./ThemeToggle";

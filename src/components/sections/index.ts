@@ -6,3 +6,4 @@ export { ProductsPreviewSection } from "./ProductsPreviewSection";
 export { TestimonialsSection } from "./TestimonialsSection";
 export { FAQSection } from "./FAQSection";
 export { ContactSection } from "./ContactSection";
+export { Footer } from "./Footer";

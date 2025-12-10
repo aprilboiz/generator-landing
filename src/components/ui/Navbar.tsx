@@ -2,7 +2,8 @@
 
 import { useState, useEffect, ReactNode } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui";
+import { Button } from "./Button";
+import { ThemeToggle } from "./ThemeToggle";
 import { Zap, Phone, Menu, X } from "lucide-react";
 
 // Types for navbar configuration
@@ -116,7 +117,7 @@ export function Navbar({
                 className={`font-bold text-lg ${
                   isScrolled
                     ? "text-gray-900 dark:text-white"
-                    : "text-white"
+                    : "text-gray-900 dark:text-white"
                 }`}
               >
                 {logo.brandName}
@@ -139,7 +140,7 @@ export function Navbar({
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isScrolled
                     ? "text-gray-700 hover:text-orange-600 hover:bg-orange-50 dark:text-gray-200 dark:hover:bg-gray-800"
-                    : "text-gray-200 hover:text-white hover:bg-white/10"
+                    : "text-gray-700 hover:text-orange-600 hover:bg-gray-900/5 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10"
                 }`}
               >
                 {item.label}
@@ -149,12 +150,13 @@ export function Navbar({
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            <ThemeToggle />
             <a
               href={`tel:${hotline.replace(/-/g, "")}`}
               className={`flex items-center gap-2 text-sm font-medium ${
                 isScrolled
                   ? "text-gray-700 dark:text-gray-200"
-                  : "text-gray-200"
+                  : "text-gray-700 dark:text-gray-200"
               }`}
             >
               <Phone className="w-4 h-4" />
@@ -171,7 +173,7 @@ export function Navbar({
             className={`lg:hidden p-2 rounded-lg transition-colors ${
               isScrolled
                 ? "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-                : "text-white hover:bg-white/10"
+                : "text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-white/10"
             }`}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}

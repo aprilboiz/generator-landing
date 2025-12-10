@@ -7,7 +7,7 @@ import { Check, MapPin, Mail } from "lucide-react";
 const CONTACT_INFO = {
   hotline: "0909-XXX-XXX",
   zaloLink: "https://zalo.me/0909XXXXXX",
-  address: "123 Đường ABC, Quận Bình Tân, TP. Hồ Chí Minh",
+  address: "81 Đường số 3, Quận Bình Tân, TP. Hồ Chí Minh",
   email: "contact@mayphatdienhcm.vn",
 };
 

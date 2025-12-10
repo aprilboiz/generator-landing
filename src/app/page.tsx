@@ -6,10 +6,12 @@ import {
   TestimonialsSection,
   FAQSection,
   ContactSection,
+  Footer,
 } from "@/components/sections";
 import { FloatingButtons, Navbar } from "@/components/ui";
 import type { FloatingButtonItem } from "@/components/ui/FloatingButtons";
-import { Phone, MessageCircle } from "lucide-react";
+import { Phone } from "lucide-react";
+import Image from "next/image";
 
 // Cấu hình floating buttons - dễ dàng thêm/bớt/chỉnh sửa
 const FLOATING_BUTTONS: FloatingButtonItem[] = [
@@ -28,7 +30,7 @@ const FLOATING_BUTTONS: FloatingButtonItem[] = [
     href: "https://zalo.me/0909XXXXXX", // TODO: Thay bằng link thật
     ariaLabel: "Nhắn Zalo",
     label: "Nhắn Zalo",
-    icon: <MessageCircle className="w-6 h-6" />, // Sử dụng MessageCircle thay cho Zalo icon
+    icon: <Image src="/zalo.png" alt="Zalo" width={32} height={32} />,
     gradient: "from-blue-500 to-blue-600",
     shadowColor: "blue-500/30",
     external: true,
@@ -69,17 +71,7 @@ export default function HomePage() {
         <ContactSection />
 
         {/* Footer */}
-        <footer className="bg-gray-900 text-gray-400 py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="mb-2">
-              © {new Date().getFullYear()} Máy Phát Điện HCM. All rights
-              reserved.
-            </p>
-            <p className="text-sm">
-              Sửa chữa, bảo trì và bán máy phát điện uy tín tại Hồ Chí Minh
-            </p>
-          </div>
-        </footer>
+        <Footer />
       </main>
 
       {/* Floating buttons - cấu hình qua props */}

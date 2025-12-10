@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
 import { Container, SectionTitle, Button } from "@/components/ui";
 import { Zap, Fuel, Users } from "lucide-react";
 
@@ -20,7 +24,7 @@ const PRODUCTS: Product[] = [
     power: "2.2 kVA",
     fuel: "Xăng",
     suitableFor: "Hộ gia đình, văn phòng nhỏ",
-    image: "/products/generator-1.jpg",
+    image: "/products/honda-ep2500.png",
     isNew: true,
   },
   {
@@ -29,7 +33,7 @@ const PRODUCTS: Product[] = [
     power: "30 kVA",
     fuel: "Diesel",
     suitableFor: "Nhà xưởng, công trình",
-    image: "/products/generator-2.jpg",
+    image: "/products/cummins-30kva.webp",
     isNew: true,
   },
   {
@@ -38,37 +42,61 @@ const PRODUCTS: Product[] = [
     power: "45 kVA",
     fuel: "Diesel",
     suitableFor: "Công trình, sự kiện lớn",
-    image: "/products/generator-3.jpg",
+    image: "/products/denyo-45kva.png",
     isNew: false,
   },
   {
-    id: "mitsubishi-100kva",
-    name: "Mitsubishi MGS-100",
-    power: "100 kVA",
-    fuel: "Diesel",
+    id: "yamaha-ef4000fw",
+    name: "Yamaha EF4000FW",
+    power: "3.3 kVA",
+    fuel: "Xăng",
     suitableFor: "Nhà máy, khu công nghiệp",
-    image: "/products/generator-4.jpg",
+    image: "/products/yamaha-ef4000fw.png",
     isNew: true,
   },
   {
-    id: "kubota-15kva",
-    name: "Kubota KJ-T150",
-    power: "15 kVA",
-    fuel: "Diesel",
+    id: "honda-ep650",
+    name: "Honda EP650",
+    power: "0.55 kVA",
+    fuel: "Xăng",
     suitableFor: "Văn phòng, cửa hàng",
-    image: "/products/generator-5.jpg",
+    image: "/products/honda-ep650.png",
     isNew: false,
   },
   {
-    id: "perkins-250kva",
-    name: "Perkins 1306A-E87TAG6",
-    power: "250 kVA",
-    fuel: "Diesel",
+    id: "honda-tpg3000hm",
+    name: "Honda TPG3000HM",
+    power: "2 kVA",
+    fuel: "Xăng",
     suitableFor: "Bệnh viện, trung tâm dữ liệu",
-    image: "/products/generator-6.jpg",
+    image: "/products/honda-tpg.png",
     isNew: true,
   },
 ];
+
+// Product Image component with fallback
+function ProductImage({ src, alt }: { src: string; alt: string }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <Zap className="w-16 h-16 text-gray-400 dark:text-gray-500" strokeWidth={1} />
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className="object-cover group-hover:scale-105 transition-transform duration-300"
+      onError={() => setHasError(true)}
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+    />
+  );
+}
 
 /**
  * ProductsPreviewSection - Giới thiệu sản phẩm demo
@@ -89,10 +117,9 @@ export function ProductsPreviewSection() {
               key={product.id}
               className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
             >
-              {/* Image placeholder */}
-              <div className="relative h-48 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
-                {/* Placeholder icon */}
-                <Zap className="w-16 h-16 text-gray-400 dark:text-gray-500" strokeWidth={1} />
+              {/* Product Image with fallback */}
+              <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600">
+                <ProductImage src={product.image} alt={product.name} />
 
                 {/* New badge */}
                 {product.isNew && (

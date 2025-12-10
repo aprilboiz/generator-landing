@@ -1,6 +1,29 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(:root.dark, :root.dark *));
+
 :root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* Dark mode via class (from theme toggle) */
+:root.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* Dark mode via system preference (fallback when theme is "system") */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Light mode override when class is explicitly set */
+:root.light {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -11,18 +34,12 @@
   --font-sans: var(--font-inter), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 /* Base styles */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Smooth scroll behavior */
@@ -30,13 +47,13 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Light mode */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1f2937;
+  background: #e5e7eb;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -46,6 +63,12 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #ea580c;
+}
+
+/* Custom scrollbar - Dark mode */
+.dark ::-webkit-scrollbar-track,
+:root.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
 }
 
 /* Focus visible for accessibility */

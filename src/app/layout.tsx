@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { generateLocalBusinessSchema, defaultBusinessInfo } from "@/lib/seo";
+import { ThemeProvider } from "@/components/ui";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -11,7 +12,7 @@ const inter = Inter({
 
 // SEO Metadata
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mayphatdienhcm.vn"), // TODO: Thay bằng URL thật
+  metadataBase: new URL("https://mayphatdienhcm.vercel.app"), // TODO: Thay bằng URL thật
   title: {
     default: "Sửa chữa & bán máy phát điện tại Hồ Chí Minh | Uy tín - Bảo hành",
     template: "%s | Máy Phát Điện HCM",
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "vi_VN",
-    url: "https://mayphatdienhcm.vn",
+    url: "https://mayphatdienhcm.vercel.app",
     siteName: "Máy Phát Điện HCM",
     title: "Sửa chữa & bán máy phát điện tại Hồ Chí Minh | Uy tín - Bảo hành",
     description:
@@ -79,17 +80,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className="scroll-smooth">
+    <html lang="vi" className="scroll-smooth" suppressHydrationWarning>
       <head>
         {/* Inject JSON-LD structured data cho SEO */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Script to prevent flash on initial load */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
+        <ThemeProvider defaultTheme="system">
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+
